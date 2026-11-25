@@ -18,10 +18,15 @@
    PICTURE: o Wbot (sticker) segurando o spray, ao lado do placar de carimbos.
    COLOUR and TYPE: brand kit Wbot direção A: creme, tinta, cobalto, marca-texto amarelo, ocre raro. Fraunces 600 + Work Sans.
    LAYOUT: coluna única de missões em escada, nav de seções, plano montado sozinho no fim. */
-:root{color-scheme:light dark;
+:root{color-scheme:light dark;--hi:#FFE680;
+--bg:#FAF2E2;--card:#fffaf0;--ink:#1C1C1C;--soft:#4D4D4D;--line:#1C1C1C;--co:#2F2FD1;--coBg:#e6e6fb;--oc:#BE3B2A;--paper:#f3e8d2;--ph:#6b655c}
+/* celulares antigos sem light-dark(): claro por padrão, escuro pelo sistema */
+@supports not (color:light-dark(#000,#fff)){@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+--bg:#17171a;--card:#222226;--ink:#F4ECDC;--soft:#bdb6a8;--line:#F4ECDC;--co:#9a9aff;--coBg:#2a2a52;--oc:#e06a58;--paper:#1d1d21;--ph:#a8a296}}}
+@supports (color:light-dark(#000,#fff)){:root{
 --bg:light-dark(#FAF2E2,#17171a);--card:light-dark(#fffaf0,#222226);--ink:light-dark(#1C1C1C,#F4ECDC);
 --soft:light-dark(#4D4D4D,#bdb6a8);--line:light-dark(#1C1C1C,#F4ECDC);--co:light-dark(#2F2FD1,#9a9aff);
---coBg:light-dark(#e6e6fb,#2a2a52);--hi:#FFE680;--oc:light-dark(#BE3B2A,#e06a58);--paper:light-dark(#f3e8d2,#1d1d21)}
+--coBg:light-dark(#e6e6fb,#2a2a52);--oc:light-dark(#BE3B2A,#e06a58);--paper:light-dark(#f3e8d2,#1d1d21);--ph:light-dark(#6b655c,#a8a296)}}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html{scroll-padding-top:72px;scroll-behavior:smooth}
@@ -45,7 +50,7 @@ label.f.big{font-size:17px}
 .chk{display:flex;gap:10px;align-items:center;font-weight:600;min-height:44px}
 .chk input{width:22px;height:22px;min-height:0;accent-color:var(--co)}
 select{font:16px "Work Sans",sans-serif;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
-::placeholder{color:#9a9488;font-style:italic}
+::placeholder{color:var(--ph);opacity:1;font-style:italic}
 .naosei-only{display:none}body.naosei .naosei-only{display:block}
 .board{margin-top:22px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;box-shadow:4px 4px 0 var(--line)}
 .board-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:600}
@@ -86,6 +91,10 @@ textarea{min-height:80px;resize:vertical}
 input:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--co);outline-offset:2px}
 .prompt{background:var(--paper);border:2px dashed var(--soft);border-radius:12px;padding:14px;margin:8px 0;font-size:15.5px}
 .howto{margin:14px 0 4px;font-size:14px;font-weight:600;color:var(--co)}
+.ais{margin:6px 0 0;font-size:14px;color:var(--soft)}.ais a{display:inline-block;padding:10px 4px;font-weight:600}
+.need{border-color:var(--oc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--oc) 30%,transparent)}
+.iab{position:sticky;top:0;z-index:30;background:var(--hi);color:#1C1C1C;padding:12px max(5vw,16px);font-size:15px;font-weight:600;border-bottom:2px solid #1C1C1C}
+.confirm{border:2px solid var(--oc);border-radius:12px;padding:14px;margin-top:12px;background:var(--card)}
 .prompt .ph{background:var(--hi);color:#1C1C1C;border-radius:3px;padding:0 3px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 button{font:600 15px "Work Sans",sans-serif;min-height:44px;padding:10px 16px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
@@ -141,6 +150,7 @@ footer .sig{font:600 18px Fraunces,serif;color:var(--ink)}
 </style>
 </head>
 <body>
+<div class="iab" id="iab" hidden>Você abriu por dentro de um app (WhatsApp, Instagram, Facebook ou TikTok). Para não perder suas respostas, toque nos 3 pontinhos e escolha "Abrir no navegador".</div>
 <header class="wrap hero">
   <div>
     <span class="lbl">Kit pós-encontro GAMT · IA no mercado de trabalho</span>
@@ -213,6 +223,11 @@ footer .sig{font:600 18px Fraunces,serif;color:var(--ink)}
     <button class="pri" id="mapbtn">Baixar meu mapa (imagem)</button>
     <button data-copy="plan">Copiar meu plano</button>
     <span class="toast" id="t-plan" aria-live="polite"></span>
+  </div>
+  <div class="row" style="margin-top:10px"><button id="erase">Apagar minhas respostas</button></div>
+  <div class="confirm" id="erasebox" hidden>
+    <p style="margin:0 0 10px"><b>Apagar tudo deste celular?</b> Respostas e carimbos somem e não dá para desfazer. Se quiser guardar, baixe o mapa antes. Útil quando o celular é dividido com outra pessoa.</p>
+    <div class="row"><button class="pri" id="eraseyes" style="background:var(--oc);border-color:var(--oc)">Apagar tudo</button><button id="eraseno">Cancelar</button></div>
   </div>
   <p class="small">O que você escreve fica só neste navegador. Baixe o mapa para guardar a sua escada de verdade: dá para usar de papel de parede, mandar para a pessoa da Missão 5 ou postar no grupo da turma. Contar para alguém ajuda a cumprir.</p>
   <div id="modal" hidden>
@@ -299,9 +314,10 @@ if(!S.start){S.start=new Date().toISOString().slice(0,10)}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 save();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const val=k=>{let v=(S.v[k]||'').trim();if(!v&&k==='degrau')v=(S.v.escada||'').split(/→|->|>|\n|;|,/)[0].trim();return v};
-const tplOf=m=>m.pAlt&&val('naosei')&&!val('sonho')?m.pAlt:m.p;
-const sonhoTxt=()=>val('sonho')||(val('naosei')&&val('interesse')?'Ainda escolhendo (gosto de '+val('interesse')+')':'');
+const normSonho=v=>v.replace(/^\s*(eu\s+)?((quero|queria|gostaria\s+de|sonho\s+em)\s+)?ser\s+/i,'').replace(/^\s*(eu\s+)?quero\s+/i,'').trim();
+const val=k=>{let v=(S.v[k]||'').trim();if(k==='sonho')v=normSonho(v);if(!v&&k==='degrau')v=(S.v.escada||'').split(/→|->|>|\n|;|,/)[0].trim();return v};
+const tplOf=m=>m.pAlt&&val('naosei')&&(!val('sonho')||NOTPRO.test(S.v.sonho||''))?m.pAlt:m.p;
+const sonhoTxt=()=>(val('naosei')&&NOTPRO.test(S.v.sonho||'')?'':val('sonho'))||(val('naosei')&&val('interesse')?'Ainda escolhendo (gosto de '+val('interesse')+')':'');
 
 const M=[
 {id:1,t:'Desenhe sua escada',min:'cerca de 15 min',stamp:'Escada desenhada',
@@ -309,7 +325,7 @@ const M=[
  f:[['idade','Quantos anos você tem? (só o número)','ex.: 17',{type:'number'}],['escola','Como estão seus estudos?','',{type:'select',opts:['estou no 1º ano do ensino médio','estou no 2º ano do ensino médio','estou no 3º ano do ensino médio','terminei o ensino médio','faço curso técnico','estudo no EJA (supletivo)','parei de estudar antes de terminar o ensino médio','estou na faculdade']}]],
  pAlt:'Ainda não sei que profissão quero seguir. Tenho {idade} anos e {escola}. Gosto de {interesse}. Sugira 3 profissões que combinam comigo, explique cada uma em 2 frases simples e desenhe os degraus típicos até cada uma, começando pelo primeiro emprego (aprendiz, estágio ou curso técnico). No fim, me faça 3 perguntas para me ajudar a escolher.',
  note:'Você marcou "ainda não sei": a IA vai sugerir 3 profissões. Responda às perguntas dela, escolha a que mais te animou e escreva lá no topo, no campo da profissão. Pode trocar depois.',
- p:'Meu sonho é ser {sonho}. Tenho {idade} anos e {escola}. Desenhe os degraus típicos até lá, começando pelo primeiro emprego (aprendiz, estágio ou curso técnico). Mostre também caminhos alternativos e quanto tempo cada degrau costuma levar.',
+ p:'A profissão que eu sonho ter é: {sonho}. Tenho {idade} anos e {escola}.{_aviso} Desenhe os degraus típicos até lá, começando pelo primeiro emprego (aprendiz, estágio ou curso técnico). Mostre também caminhos alternativos e quanto tempo cada degrau costuma levar. Se o caminho for longo ou muito disputado, mostre também profissões próximas na mesma área e o que eu já consigo fazer na minha idade.',
  c:'peça para a IA explicar o degrau que você não entendeu. Dúvida que sobrar, anote para a Missão 5.',
  o:[['escada','Você sai com: a sua escada, com as suas palavras','ex.: aprendiz no administrativo, técnico em contabilidade, faculdade (ProUni), estágio, contador',{help:'Escreva só os degraus, do primeiro ao último, separados por vírgula. Não cole a resposta inteira da IA.'}]],
  extra:'bonus'},
@@ -324,6 +340,7 @@ const M=[
  f:[['sabe','O que você já sabe fazer?','ex.: atendo no comércio do meu tio, mexo bem no Canva',{help:'Vale tudo: bico, ajudar em casa ou no negócio da família, curso, hobby, coisa que aprendeu sozinho.'}],['gosta','Do que você gosta?','ex.: matemática, organizar coisas, games',{help:'Matérias da escola, hobbies, assuntos.'}]],
  p:'Sobre mim: já sei {sabe} e gosto de {gosta}. Destas empresas: {empresas}. Que vaga de entrada (aprendiz, estágio ou técnico) combina com meu perfil? O que essa vaga costuma pedir que eu ainda não tenho, e onde aprendo isso de graça ou com bolsa perto de {cidade}?',
  c:'procure uma vaga real dessa área na página de carreiras da empresa, no LinkedIn, na Gupy ou em outras plataformas. Curso e bolsa só valem confirmados no site oficial (Etec, Fatec, institutos federais, Senai, Senac, Sisu, ProUni).',
+ extra:'entrevista',
  o:[['vaga','Você sai com: a vaga real que você achou','ex.: Jovem aprendiz administrativo, Empresa A',{help:'Nome da vaga + empresa. Tem que ser uma vaga que você viu publicada, não só a sugestão da IA.'}],['falta','O que a vaga pede que você ainda não tem','ex.: Excel básico, ensino médio completo']]},
 {id:4,t:'Os próximos 3 meses',min:'cerca de 10 min',stamp:'Plano no papel',
  tip:'Plano que diz quando e onde você vai agir sai do papel muito mais vezes do que "vou estudar mais". Por isso o "quando, eu vou" lá embaixo.',
@@ -335,7 +352,7 @@ const M=[
 {id:5,t:'Converse com alguém de verdade',min:'cerca de 15 min + a conversa',stamp:'Plano revisado',
  tip:'A IA não conhece você, sua cidade nem as empresas daqui como uma pessoa conhece. Se a conversa for boa, essa pessoa pode virar sua mentora.',
  f:[['quem','Com quem você vai conversar?','ex.: meu professor de matemática',{help:'Escreva o papel da pessoa (professor, orientador do GAMT, tia que trabalha na área), não o nome dela: esse texto vai para a IA.'}]],
- p:'Vou conversar por 15 minutos com {quem} sobre o meu plano. Meu sonho é {sonho}, meu primeiro degrau é {vaga} e meu plano começa por {mes1}. Me ajude a preparar 5 perguntas curtas para descobrir se o caminho faz sentido, o que eu não estou vendo e quem mais eu deveria conhecer.',
+ p:'Vou conversar por 15 minutos com {quem} sobre o meu plano. A profissão que eu sonho ter é {sonho}, meu primeiro degrau é {vaga} e meu plano começa por {mes1}. Me ajude a preparar 5 perguntas curtas para descobrir se o caminho faz sentido, o que eu não estou vendo e quem mais eu deveria conhecer.',
  c:'na conversa, mostre a escada e o plano, faça as perguntas, anote as respostas e peça sinceridade: "o que você mudaria?". Depois, volte à IA: "Recebi este retorno: [o que a pessoa disse]. Ajuste meu plano levando isso em conta."',
  o:[['retorno','Você sai com: o que a pessoa disse e o que mudou no seu plano','ex.: a professora sugeriu começar pelo técnico antes da faculdade']]}
 ];
@@ -350,8 +367,11 @@ const T=[
 ['Design: post, cartaz, currículo visual','Canva','Modelos prontos, com recursos de IA.','Os recursos de IA têm cota no plano grátis.']
 ];
 
-const fill=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>{const v=val(k);return v?esc(v):'<span class="ph">['+esc(label(k))+']</span>'});
-const plain=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>val(k)||'['+label(k)+']');
+const PB='Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?';
+const special=k=>k==='_aviso'?(NOTPRO.test(S.v.sonho||'')?' Se o que escrevi não for uma profissão, me ajude primeiro a descobrir que profissões combinam com esse objetivo.':''):'';
+const missing=tpl=>[...new Set([...tpl.matchAll(/\{(\w+)\}/g)].map(x=>x[1]).filter(k=>k[0]!=='_'&&!val(k)))];
+const fill=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>{if(k[0]==='_')return esc(special(k));const v=val(k);return v?esc(v):'<span class="ph">['+esc(label(k))+']</span>'});
+const plain=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>k[0]==='_'?special(k):(val(k)||'['+label(k)+']'));
 const LBL={sonho:'a profissão dos seus sonhos',idade:'sua idade',escola:'como estão seus estudos',interesse:'do que você gosta',cidade:'sua cidade',regiao:'cidades da região',degrau:'o primeiro degrau da sua escada',sabe:'o que você já sabe fazer',gosta:'do que você gosta',empresas:'as 3 empresas da Missão 2',vaga:'a vaga real da Missão 3',horas:'horas por semana',mes1:'a meta do mês 1',quem:'com quem vai conversar'};
 function label(k){return LBL[k]||k}
 
@@ -366,6 +386,7 @@ const bonus=`<details><summary>Bônus: e se a profissão mudar?</summary>
 <p class="howto">Copie este pedido e cole no chat de uma IA (ChatGPT, Gemini, Claude ou Copilot). Depois, leia a resposta.</p>
 <div class="prompt" id="pb">${'Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?'}</div>
 <div class="row"><button data-copy="pb">Copiar pedido para a IA</button><span class="toast" id="t-pb" aria-live="polite"></span></div>
+<p class="ais">Abrir a IA: <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a> · <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a> · <a href="https://copilot.microsoft.com" target="_blank" rel="noopener">Copilot</a></p>
 <p><b>Exemplo ilustrativo: quem sonha em ser contador</b></p>
 <div class="fut">
 <div><b>Tudo como hoje</b><span>Empresas seguem precisando de contador para impostos e folha de pagamento.</span></div>
@@ -374,6 +395,14 @@ const bonus=`<details><summary>Bônus: e se a profissão mudar?</summary>
 <div><b>Tudo muda</b><span>O contador vira consultor que usa IA para entender os números do cliente.</span></div>
 </div>
 <p><b>Primeiro degrau que vale em todos:</b> aprendiz no administrativo ou financeiro + técnico em contabilidade + Excel. Escolha um primeiro passo que funcione em vários futuros.</p>
+</details>`;
+const PE='Vou me candidatar à vaga de {vaga}. Faça uma simulação de entrevista comigo: uma pergunta por vez, espere minha resposta antes da próxima e comece pelo "fale um pouco sobre você". Se eu travar, me mostre um exemplo de resposta simples e verdadeira. No fim, me dê 3 dicas para melhorar.';
+const entrevista=`<details><summary>Bônus: treine a entrevista dessa vaga</summary>
+<p>Dá frio na barriga? Normal. Treinar com a IA antes ajuda muito. Dica: no ChatGPT ou no Gemini, use o modo de voz e responda falando, como numa entrevista de verdade.</p>
+<p class="howto">Copie este pedido e cole no chat de uma IA (ChatGPT, Gemini, Claude ou Copilot). Depois, responda uma pergunta por vez.</p>
+<div class="prompt" id="pe"></div>
+<div class="row"><button data-copy="pe">Copiar pedido para a IA</button><span class="toast" id="t-pe" aria-live="polite"></span></div>
+${'<p class="ais">Abrir a IA: <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a> · <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a> · <a href="https://copilot.microsoft.com" target="_blank" rel="noopener">Copilot</a></p>'}
 </details>`;
 const when=`<div class="check"><b>Meu primeiro passo, em uma frase</b>
 <div class="when" style="margin-top:8px"><span>Quando</span><input data-k="quando" placeholder="ex.: chegar da escola na terça"><span>eu vou</span><input data-k="euvou" placeholder="ex.: fazer 30 min do curso de Excel"></div>
@@ -388,7 +417,8 @@ document.getElementById('ladder').innerHTML=M.map((m,i)=>`
  <p class="howto">Copie este pedido e cole no chat de uma IA (ChatGPT, Gemini, Claude ou Copilot). Depois, leia a resposta.</p>
  <div class="prompt" id="p${m.id}"></div>
  <div class="row"><button class="pri" data-copy="p${m.id}">Copiar pedido para a IA</button><span class="toast" id="t-p${m.id}" aria-live="polite"></span></div>
- ${m.extra==='bonus'?bonus:''}
+ <p class="ais">Abrir a IA: <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a> · <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini</a> · <a href="https://copilot.microsoft.com" target="_blank" rel="noopener">Copilot</a></p>
+ ${m.extra==='bonus'?bonus:''}${m.extra==='entrevista'?entrevista:''}
  <div class="check"><b>Confira:</b> ${esc(m.c)}</div>
  <div class="fields">${m.o.map(x=>field(x,true)).join('')}</div>
  ${m.extra==='when'?when:''}
@@ -412,7 +442,7 @@ function render(pop){
     const b=document.querySelector(`[data-done="${m.id}"]`);const d=!!S.done[m.id];
     b.textContent=d?'Carimbada! (toque para desfazer)':'Concluí esta missão';b.setAttribute('aria-pressed',d);
     document.getElementById('m'+m.id).classList.toggle('done',d)});
-  const pb=document.getElementById('pb');if(pb)pb.innerHTML=fill('Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?');
+  const pb=document.getElementById('pb');if(pb)pb.innerHTML=fill(PB);const pe=document.getElementById('pe');if(pe)pe.innerHTML=fill(PE);
   const n=1+M.filter(m=>S.done[m.id]).length;
   document.getElementById('score').textContent=`${n} de 6 carimbos`;
   document.getElementById('barfill').style.width=(n/6*100)+'%';
@@ -442,7 +472,13 @@ document.addEventListener('click',async e=>{
   const c=e.target.closest('[data-copy]');
   if(c){const id=c.dataset.copy;let txt;
     if(id==='plan')txt='MEU PLANO (kit GAMT)\n'+PLAN.map(([l,k])=>`${l}: ${pv(k)||'-'}`).join('\n');
-    else{const m=M.find(x=>'p'+x.id===id);txt=m?plain(tplOf(m)):id==='pb'?plain('Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?'):document.getElementById(id).textContent.trim()}
+    else{const m=M.find(x=>'p'+x.id===id);const tpl=m?tplOf(m):id==='pb'?PB:id==='pe'?PE:null;
+      if(tpl){const miss=missing(tpl);const t0=document.getElementById('t-'+id);
+        if(miss.length&&c.dataset.warned!=='1'){c.dataset.warned='1';setTimeout(()=>{c.dataset.warned=''},15000);
+          const box=c.closest('.mis')||c.closest('details');
+          miss.forEach(k=>{const f=box&&box.querySelector(`[data-k="${k}"]`)||document.querySelector(`.dreambox [data-k="${k}"]`);if(f){f.classList.add('need');f.addEventListener('input',()=>f.classList.remove('need'),{once:true})}});
+          t0.textContent='Antes de copiar, preencha: '+miss.map(label).join(', ')+'. (Toque de novo para copiar assim mesmo.)';setTimeout(()=>t0.textContent='',9000);return}}
+      txt=tpl?plain(tpl):document.getElementById(id).textContent.trim()}
     const t=document.getElementById('t-'+id);
     try{await navigator.clipboard.writeText(txt);t.textContent='Copiado! Agora abra a IA e cole no chat.';if(id==='plan'||id.startsWith('msg'))t.textContent='Copiado.'}
     catch(err){t.textContent='Não deu para copiar aqui: segure o dedo no texto e copie.'}
@@ -491,8 +527,8 @@ async function drawMap(){
     x.fillStyle=top?HI:'#fff';x.font='600 30px '+SER;x.textAlign='center';x.fillText(String(i+1),sx+56,sy+sh/2+11);x.textAlign='left';
     const tx=sx+108,tw=cw-128;
     x.fillStyle=top?INK:CO;x.font='600 24px '+SAN;x.fillText(lab,tx,sy+40);
-    if(v){x.fillStyle=INK;x.font=top?'600 40px '+SER:'400 27px '+SAN;
-      const L=wrapLines(x,v,tw,top?2:3),lh=top?44:32;L.forEach((l,j)=>x.fillText(l,tx,sy+(top?88:76)+j*lh))}
+    if(v){x.fillStyle=INK;x.font=top?'600 40px '+SER:'400 26px '+SAN;
+      const L=wrapLines(x,v,tw,top?2:3),lh=top?44:30;L.forEach((l,j)=>x.fillText(l,tx,sy+(top?88:72)+j*lh))}
     else{x.fillStyle='#8a8478';x.font='italic 400 27px '+SAN;x.fillText('a preencher',tx,sy+84)}
   });
   const bot=await loadImg('wbot.webp');
@@ -525,6 +561,13 @@ document.getElementById('mapbtn').addEventListener('click',async()=>{
   catch(e){toast('Não deu para montar o mapa agora. Tente de novo.')}
   b.disabled=false;b.textContent='Baixar meu mapa (imagem)'});
 
+document.getElementById('erase').addEventListener('click',()=>{document.getElementById('erasebox').hidden=false;document.getElementById('eraseno').focus()});
+document.getElementById('eraseno').addEventListener('click',()=>{document.getElementById('erasebox').hidden=true});
+document.getElementById('eraseyes').addEventListener('click',()=>{
+  S={v:{cidade:'Caçapava/SP',regiao:'Caçapava, São José dos Campos, Taubaté e Jacareí'},done:{},start:new Date().toISOString().slice(0,10)};save();
+  document.querySelectorAll('[data-k]').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value=S.v[el.dataset.k]||''});
+  document.getElementById('erasebox').hidden=true;render();toast('Respostas apagadas.');window.scrollTo(0,0)});
+if(!inClaude&&/Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|Bytedance|WhatsApp|Line\//i.test(navigator.userAgent))document.getElementById('iab').hidden=false;
 save();render();
 }
 </script>
