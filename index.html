@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Do sonho ao primeiro degrau</title>
+<meta name="theme-color" content="#2F2FD1">
+<meta name="description" content="Kit GAMT: cinco missões para ir do sonho ao primeiro degrau com ajuda de IA.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: camarada, direto, de igual para igual com quem tem 16 a 19 anos.
+   IDEA: caderno de campo de missões, com carimbos a cada degrau subido.
+   PICTURE: o Wbot (sticker) segurando o spray, ao lado do placar de carimbos.
+   COLOUR and TYPE: brand kit Wbot direção A: creme, tinta, cobalto, marca-texto amarelo, ocre raro. Fraunces 600 + Work Sans.
+   LAYOUT: coluna única de missões em escada, nav de seções, plano montado sozinho no fim. */
+:root{color-scheme:light dark;
+--bg:light-dark(#FAF2E2,#17171a);--card:light-dark(#fffaf0,#222226);--ink:light-dark(#1C1C1C,#F4ECDC);
+--soft:light-dark(#4D4D4D,#bdb6a8);--line:light-dark(#1C1C1C,#F4ECDC);--co:light-dark(#2F2FD1,#9a9aff);
+--coBg:light-dark(#e6e6fb,#2a2a52);--hi:#FFE680;--oc:light-dark(#BE3B2A,#e06a58);--paper:light-dark(#f3e8d2,#1d1d21)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Work Sans",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,7vw,52px)}h2{font-size:clamp(28px,5vw,38px)}h3{font-size:22px}
+.wrap{max-width:860px;margin:0 auto;padding:0 max(5vw,16px)}
+.band{padding:clamp(28px,5vw,56px) 0}
+mark{background:var(--hi);color:#1C1C1C;padding:0 .2em;border-radius:3px}
+a{color:var(--co)}
+.lbl{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--co)}
+.lbl::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--co)}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:center;padding-top:28px}
+.hero p.sub{font-size:18px;color:var(--soft);margin:14px 0 18px;max-width:34ch}
+.hero img{width:100%;max-width:300px;justify-self:center;filter:drop-shadow(4px 6px 0 rgba(0,0,0,.12));transform:rotate(-4deg)}
+.dreambox{display:grid;gap:10px;max-width:520px}
+label.f.big{font-size:17px}
+.help{font-weight:400;font-size:13.5px;color:var(--soft);line-height:1.4}
+.warnbox{margin:0;background:var(--hi);color:#1C1C1C;border-radius:10px;padding:10px 12px;font-size:14.5px}
+.chk{display:flex;gap:10px;align-items:center;font-weight:600;min-height:44px}
+.chk input{width:22px;height:22px;min-height:0;accent-color:var(--co)}
+select{font:16px "Work Sans",sans-serif;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+::placeholder{color:#9a9488;font-style:italic}
+.naosei-only{display:none}body.naosei .naosei-only{display:block}
+.board{margin-top:22px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;box-shadow:4px 4px 0 var(--line)}
+.board-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:600}
+.bar{height:14px;border:2px solid var(--line);border-radius:99px;margin:10px 0 14px;overflow:hidden;background:var(--paper)}
+.bar i{display:block;height:100%;width:0;background:var(--co);transition:width .5s}
+.stamps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.stamp{aspect-ratio:1;border:2px dashed var(--soft);border-radius:50%;display:grid;place-items:center;text-align:center;font-size:10.5px;line-height:1.1;padding:4px;color:var(--soft);font-weight:600}
+.stamp.on{border:3px solid var(--co);color:var(--co);background:var(--coBg);transform:rotate(-8deg)}
+.stamp.pop{animation:pop .5s}
+@keyframes pop{0%{transform:scale(1.6) rotate(-20deg);opacity:0}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+.day{font-size:14px;color:var(--soft);font-weight:500}
+/* nav */
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:2px solid var(--line)}
+.scroll{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+.scroll a{flex:none;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px;padding:10px 14px;border-radius:99px;min-height:44px;display:flex;align-items:center}
+.scroll a:hover,.scroll a:focus-visible{background:var(--coBg);color:var(--co)}
+/* loop */
+.loop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px;counter-reset:l}
+.loop div{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:12px;font-weight:600;font-size:15px;position:relative}
+.loop div::before{counter-increment:l;content:counter(l);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--co);color:#fff;font-size:14px;margin-bottom:6px}
+.loop small{display:block;font-weight:400;color:var(--soft)}
+/* missions */
+.ladder{display:grid;gap:22px;margin-top:22px}
+.mis{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:clamp(16px,3vw,24px);box-shadow:5px 5px 0 var(--line);position:relative}
+.mis:nth-child(2){margin-left:2%}.mis:nth-child(3){margin-left:4%}.mis:nth-child(4){margin-left:6%}.mis:nth-child(5){margin-left:8%}
+.mis.done{box-shadow:5px 5px 0 var(--co);border-color:var(--co)}
+.mhead{display:flex;gap:14px;align-items:flex-start}
+.num{flex:none;width:52px;height:52px;border-radius:12px;background:var(--co);color:#fff;font:600 26px Fraunces,serif;display:grid;place-items:center}
+.mis.done .num{background:var(--hi);color:#1C1C1C}
+.meta{font-size:14px;color:var(--soft);margin-top:4px}
+.tip{display:flex;gap:10px;align-items:flex-end;margin:16px 0}
+.tip img{width:52px;height:52px;flex:none;border-radius:50%;background:var(--paper);object-fit:cover;object-position:40% 30%}
+.tip p{margin:0;background:var(--coBg);color:var(--ink);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:15px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+label.f{display:grid;gap:4px;font-size:14px;font-weight:600}
+input,textarea{font:16px "Work Sans",sans-serif;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+textarea{min-height:80px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--co);outline-offset:2px}
+.prompt{background:var(--paper);border:2px dashed var(--soft);border-radius:12px;padding:14px;margin:8px 0;font-size:15.5px}
+.howto{margin:14px 0 4px;font-size:14px;font-weight:600;color:var(--co)}
+.prompt .ph{background:var(--hi);color:#1C1C1C;border-radius:3px;padding:0 3px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:600 15px "Work Sans",sans-serif;min-height:44px;padding:10px 16px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.pri{background:var(--co);border-color:var(--co);color:#fff}
+.mis.done button.fin{background:var(--hi);border-color:var(--line);color:#1C1C1C}
+.check{background:var(--bg);border-left:4px solid var(--co);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:15px}
+.check b{color:var(--co)}
+.out{font-size:15px;margin:10px 0 4px}
+.toast{min-height:22px;font-size:14px;color:var(--co);font-weight:600}
+details{border:2px solid var(--line);border-radius:12px;padding:0 14px;margin:12px 0;background:var(--bg)}
+summary{cursor:pointer;font-weight:600;padding:12px 0;min-height:44px}
+.fut{display:grid;gap:8px;margin:8px 0 12px}
+.fut div{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr);gap:10px;font-size:15px;border-top:1px solid var(--soft);padding-top:8px}
+.when{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:center;font-weight:600}
+.next{font-size:14px;color:var(--soft);margin-top:12px}
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px}
+.tool{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px}
+.tool .t{font-size:13px;font-weight:600;color:var(--co)}
+.tool h3{font-size:20px;margin:4px 0 6px}
+.tool p{margin:0 0 8px;font-size:15px}
+.tool .warn{font-size:14px;color:var(--soft);border-top:1px dashed var(--soft);padding-top:8px;margin:0}
+.tricks{counter-reset:k;list-style:none;padding:0;display:grid;gap:8px}
+.tricks li{counter-increment:k;display:flex;gap:10px;font-size:15.5px}
+.tricks li::before{content:counter(k);flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--co);color:var(--co);display:grid;place-items:center;font-weight:600;font-size:13px}
+/* plan */
+.plan{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:6px 18px;box-shadow:5px 5px 0 var(--hi)}
+.plan div{display:grid;grid-template-columns:minmax(0,13em) minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--soft)}
+.plan div:last-child{border:0}
+.plan dt{font-weight:600}.plan dd{margin:0;white-space:pre-wrap}
+.plan dd.empty{color:var(--soft);font-style:italic}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.rules div{border:2px solid var(--line);border-radius:12px;padding:14px;background:var(--card);font-size:15px}
+.rules b{display:block;font-family:Fraunces,serif;font-size:19px;margin-bottom:4px}
+.care{border:2px solid var(--oc);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:15px}
+.care strong{color:var(--oc)}
+footer{border-top:2px solid var(--line);padding:24px 0 40px;font-size:14px;color:var(--soft)}
+footer .sig{font:600 18px Fraunces,serif;color:var(--ink)}
+.small{font-size:13px;color:var(--soft)}
+#modal{position:fixed;inset:0;z-index:20;background:rgba(20,20,24,.8);display:grid;place-items:center;padding:16px}
+#modal[hidden]{display:none}
+.mbox{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;max-width:420px;width:100%;max-height:94vh;overflow:auto;display:grid;gap:12px}
+.mbox p{margin:0;font-size:15px}.mbox img{width:100%;border-radius:8px;border:1px solid var(--soft)}
+#facilitador{display:none}
+:target#facilitador{display:block}
+@media(max-width:600px){
+.hero{grid-template-columns:1fr}.hero img{max-width:190px;grid-row:1}
+.loop{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mis:nth-child(n){margin-left:0}
+.stamps{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:300px;margin:0 auto}.stamp{font-size:11px}
+.plan div,.fut div{grid-template-columns:1fr;gap:2px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="wrap hero">
+  <div>
+    <span class="lbl">Kit pós-encontro GAMT · IA no mercado de trabalho</span>
+    <h1 style="margin-top:10px">Do sonho ao <mark>primeiro degrau</mark></h1>
+    <p class="sub">Cinco missões curtas no celular, com qualquer IA gratuita. No fim você tem um plano de 3 meses revisado por alguém de verdade.</p>
+    <div class="dreambox">
+      <label class="f big" for="sonho">Qual profissão você sonha ter?
+        <input id="sonho" data-k="sonho" placeholder="ex.: enfermeira, mecânico, advogada, programador">
+        <span class="help">É o trabalho do topo da escada. "Entrar na faculdade" ou "arrumar um emprego" são degraus no caminho: a gente chega neles nas missões.</span>
+      </label>
+      <p class="warnbox" id="sonhowarn" hidden>Isso parece um degrau ou um objetivo de vida, não uma profissão. Tudo bem! Pense: que trabalho eu quero fazer no dia a dia? Ex.: "entrar na faculdade de Direito" vira advogada; "trabalhar com carros" vira mecânico. Não sabe ainda? Marque a opção abaixo.</p>
+      <label class="chk"><input type="checkbox" data-k="naosei"> Ainda não sei qual profissão</label>
+      <label class="f" id="interessebox" hidden>Sem problema. Do que você gosta ou que área te chama atenção?
+        <input data-k="interesse" placeholder="ex.: cuidar de pessoas, games, carros, desenhar, números">
+        <span class="help">Na Missão 1 a IA vai sugerir profissões a partir disso.</span>
+      </label>
+    </div>
+  </div>
+  <img src="wbot.webp" alt="Wbot, o robô de black power, segurando uma lata de spray" width="300" height="373">
+  <div class="board" style="grid-column:1/-1">
+    <div class="board-top"><span id="score">1 de 6 carimbos</span><span class="day" id="day"></span></div>
+    <div class="bar" role="progressbar" aria-label="Progresso nas missões" aria-valuemin="0" aria-valuemax="6"><i id="barfill"></i></div>
+    <div class="stamps" id="stamps"></div>
+    <p class="small" id="nudge" style="margin:10px 0 0">O primeiro carimbo já é seu: você foi ao encontro.</p>
+    <div class="row" id="installbox" hidden style="margin-top:12px"><button id="installbtn">Instalar como app no celular</button></div>
+    <p class="small" id="ioshint" hidden style="margin:10px 0 0">No iPhone: toque em Compartilhar e depois em "Adicionar à Tela de Início" para usar como app.</p>
+  </div>
+</header>
+
+<nav><div class="wrap scroll">
+  <a href="#missoes">Missões</a><a href="#ferramentas">Qual IA usar</a><a href="#plano">Meu plano</a><a href="#regras">Regras de ouro</a><a href="#nivel2">Nível 2</a>
+</div></nav>
+
+<main>
+<section class="band" id="missoes"><div class="wrap">
+  <span class="lbl">Antes de começar</span>
+  <h2 style="margin-top:8px">O ciclo que vale para tudo</h2>
+  <div class="loop">
+    <div>Boa entrada<small>diga quem você é e o que quer</small></div>
+    <div>A IA responde<small>é um rascunho, não a verdade</small></div>
+    <div>Você analisa<small>confere, pergunta, duvida</small></div>
+    <div>Ajusta e repete<small>até ficar com a sua cara</small></div>
+  </div>
+  <p class="small" style="margin-top:12px">Preencha os campos de cada missão: o pedido para a IA se monta sozinho, é só copiar e colar no chat. O que você escreve fica salvo só neste celular. Nada de CPF, endereço ou telefone aqui.</p>
+  <div class="ladder" id="ladder"></div>
+</div></section>
+
+<section class="band" id="ferramentas" style="background:var(--paper)"><div class="wrap">
+  <span class="lbl">Caixa de ferramentas</span>
+  <h2 style="margin-top:8px">Qual IA usar em cada caso</h2>
+  <p>Comece por um chat geral para quase tudo. Vá para uma ferramenta especializada quando o resultado precisa ter um formato. Se for usar só duas: <mark>um chat geral e o NotebookLM</mark>. Ninguém usa todas, e está tudo bem.</p>
+  <div class="tools" id="tools"></div>
+  <p class="small" style="margin-top:12px">Todas têm versão gratuita com limites. Limites e preços mudam com frequência; os daqui foram conferidos em novembro de 2026.</p>
+  <h3 style="margin-top:28px">5 truques para pedir melhor</h3>
+  <ol class="tricks">
+    <li>Diga quem você é e o que quer: contexto é a melhor entrada.</li>
+    <li>Peça para a IA perguntar o que falta antes de responder.</li>
+    <li>Peça fontes e abra os links.</li>
+    <li>Peça em etapas, não tudo de uma vez.</li>
+    <li>Releia antes de usar. Trabalho da escola ou da empresa: siga as regras de lá e seja honesto sobre o uso de IA.</li>
+  </ol>
+</div></section>
+
+<section class="band" id="plano"><div class="wrap">
+  <span class="lbl">Montado com as suas respostas</span>
+  <h2 style="margin-top:8px">Meu plano</h2>
+  <p>Ele se preenche sozinho conforme você faz as missões. Escreva o que você conferiu, não o texto da IA copiado.</p>
+  <dl class="plan" id="plan"></dl>
+  <div class="row" style="margin-top:14px">
+    <button class="pri" id="mapbtn">Baixar meu mapa (imagem)</button>
+    <button data-copy="plan">Copiar meu plano</button>
+    <span class="toast" id="t-plan" aria-live="polite"></span>
+  </div>
+  <p class="small">O que você escreve fica só neste navegador. Baixe o mapa para guardar a sua escada de verdade: dá para usar de papel de parede, mandar para a pessoa da Missão 5 ou postar no grupo da turma. Contar para alguém ajuda a cumprir.</p>
+  <div id="modal" hidden>
+    <div class="mbox">
+      <p><b>Segure o dedo na imagem e escolha "Salvar imagem".</b> No computador, clique com o botão direito.</p>
+      <img id="mapimg" alt="Meu mapa: a escada do sonho ao primeiro degrau">
+      <button id="mclose">Fechar</button>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="regras" style="background:var(--paper)"><div class="wrap">
+  <span class="lbl">Não negociável</span>
+  <h2 style="margin:8px 0 16px">Regras de ouro</h2>
+  <div class="rules">
+    <div><b>Confira antes de usar</b>Empresa, curso, bolsa e salário só valem confirmados no site oficial.</div>
+    <div><b>Nada inventado</b>No currículo e no plano, só o que é verdade sobre você.</div>
+    <div><b>Seus dados são seus</b>Não cole CPF, endereço, telefone ou senhas no chat.</div>
+  </div>
+  <div class="care">
+    <strong>O que a IA não substitui.</strong> Pessoas: amigos, família e mentores abrem mais portas do que qualquer ferramenta. Profissionais: a IA não faz o papel de psicólogo, médico ou advogado. Se estiver passando por um momento difícil, converse com alguém de confiança ou ligue para o CVV no 188 (gratuito, 24 horas).
+  </div>
+</div></section>
+
+<section class="band" id="nivel2"><div class="wrap">
+  <span class="lbl">Opcional, para quem quer ir além</span>
+  <h2 style="margin-top:8px">Nível 2</h2>
+  <details><summary>Prompt, token e janela de contexto</summary>
+    <p><b>Prompt</b> é o pedido que você escreve. Mais contexto, objetivo e exemplo = resposta melhor.</p>
+    <p><b>Token</b> é o pedaço de texto que a IA lê e escreve (uma palavra, parte dela ou uma pontuação). Os limites dos planos grátis são contados assim.</p>
+    <p><b>Janela de contexto</b> é quanto texto a IA consegue ter na mesa de uma vez. Conversa longa demais e o começo pode ser esquecido.</p>
+    <p><b>Perdido no meio.</b> Um estudo de Stanford mostrou que os modelos acertam mais o que está no começo ou no fim de um texto longo. Na prática: o mais importante no começo, repita o pedido no fim, e abra uma conversa nova com um resumo quando a atual ficar enorme.</p>
+  </details>
+  <details><summary>Palavras que você vai ouvir</summary>
+    <p><b>Alucinação:</b> quando a IA inventa um dado, uma lei ou uma fonte, com toda a confiança.</p>
+    <p><b>Viés:</b> a IA pode repetir preconceitos dos textos com que aprendeu, como sugerir profissão "de homem" ou "de mulher".</p>
+    <p><b>Agente de IA:</b> IA que executa tarefas sozinha (pesquisar, preencher, enviar), em vez de só responder.</p>
+    <p><b>ATS:</b> programa que filtra currículos antes de uma pessoa ler, como a Gupy. Por isso as palavras da vaga importam no seu currículo.</p>
+    <p><b>LGPD:</b> a lei que protege seus dados pessoais.</p>
+  </details>
+  <details><summary>Segundo cérebro: onde guardar o que aprende</summary>
+    <p>Um lugar fora da cabeça para guardar notas, ideias e links. Comece com o app de notas que já está no seu celular (Google Keep, por exemplo). A ferramenta importa menos do que o hábito de anotar.</p>
+  </details>
+</div></section>
+
+<section class="band" id="facilitador" style="background:var(--paper)"><div class="wrap">
+  <span class="lbl">Para quem conduz a turma</span>
+  <h2 style="margin:8px 0 12px">Guia do facilitador</h2>
+  <ul>
+    <li><b>Duplas:</b> ao fim da Missão 1, cada dupla mostra a tela para outra. Ninguém fica só assistindo, inclusive quem tem receio de dizer que ainda não usa IA.</li>
+    <li><b>Em sala:</b> Missões 1 e 2 juntas (cerca de 25 min). As Missões 3 a 5 ficam para casa.</li>
+    <li><b>Celebre o carimbo:</b> peça que mostrem o placar no fim. Comemorar o degrau pequeno é o ponto do kit.</li>
+    <li><b>Retomada:</b> mande uma mensagem no grupo no dia 7 e outra no dia 30. Textos prontos abaixo.</li>
+  </ul>
+  <div class="prompt" id="msg7">Dia 7: E aí, turma! Já faz uma semana do encontro. Qual degrau vocês subiram? Manda o print do seu placar de carimbos aqui.</div>
+  <div class="row"><button data-copy="msg7">Copiar mensagem do dia 7</button><span class="toast" id="t-msg7" aria-live="polite"></span></div>
+  <div class="prompt" id="msg30">Dia 30: Um mês! Quem já conversou com alguém sobre o plano (Missão 5)? Conta aqui o que mudou. Quem travou, fala também que a gente ajuda.</div>
+  <div class="row"><button data-copy="msg30">Copiar mensagem do dia 30</button><span class="toast" id="t-msg30" aria-live="polite"></span></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="sig">Wanderson Filho</div>
+  <p>Voluntário no GAMT. Material de continuidade do encontro "IA no mercado de trabalho".</p>
+  <p><a href="#facilitador">Guia do facilitador</a> · <a href="#missoes">Voltar às missões</a></p>
+  <details><summary>Fontes</summary>
+    <ul class="small">
+      <li><a href="https://www.krea.ai/blog/pt-br/is-gamma-ai-free-pricing-and-alternatives-in-2026">Krea: limites do plano gratuito do Gamma (2026)</a></li>
+      <li><a href="https://academy.techpresso.co/reviews/is-napkin-ai-worth-it">Techpresso: Napkin AI em 2026</a></li>
+      <li><a href="https://horadecodar.com.br/notebook-lm-podcast/">Hora de Codar: NotebookLM e limites do plano gratuito</a></li>
+      <li><a href="https://arxiv.org/abs/2307.03172">Liu et al.: Lost in the Middle (TACL, 2024)</a></li>
+      <li><a href="https://jfsdigital.org/wp-content/uploads/2014/01/142-A01.pdf">Jim Dator: Alternative Futures at the Manoa School (2009)</a>, base do "e se a profissão mudar?"</li>
+    </ul>
+  </details>
+</div></footer>
+
+<script>
+{
+const KEY='gamt-kit-v1';
+let S={};
+try{S=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){S={}}
+S.v=S.v||{};S.done=S.done||{};
+if(!S.start){S.start=new Date().toISOString().slice(0,10)}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+save();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val=k=>{let v=(S.v[k]||'').trim();if(!v&&k==='degrau')v=(S.v.escada||'').split(/→|->|>|\n|;|,/)[0].trim();return v};
+const tplOf=m=>m.pAlt&&val('naosei')&&!val('sonho')?m.pAlt:m.p;
+const sonhoTxt=()=>val('sonho')||(val('naosei')&&val('interesse')?'Ainda escolhendo (gosto de '+val('interesse')+')':'');
+
+const M=[
+{id:1,t:'Desenhe sua escada',min:'cerca de 15 min',stamp:'Escada desenhada',
+ tip:'Sonho alto não é motivo de frustração. É a chance de quebrar o caminho em degraus pequenos e comemorar cada um.',
+ f:[['idade','Quantos anos você tem? (só o número)','ex.: 17',{type:'number'}],['escola','Como estão seus estudos?','',{type:'select',opts:['estou no 1º ano do ensino médio','estou no 2º ano do ensino médio','estou no 3º ano do ensino médio','terminei o ensino médio','faço curso técnico','estudo no EJA (supletivo)','parei de estudar antes de terminar o ensino médio','estou na faculdade']}]],
+ pAlt:'Ainda não sei que profissão quero seguir. Tenho {idade} anos e {escola}. Gosto de {interesse}. Sugira 3 profissões que combinam comigo, explique cada uma em 2 frases simples e desenhe os degraus típicos até cada uma, começando pelo primeiro emprego (aprendiz, estágio ou curso técnico). No fim, me faça 3 perguntas para me ajudar a escolher.',
+ note:'Você marcou "ainda não sei": a IA vai sugerir 3 profissões. Responda às perguntas dela, escolha a que mais te animou e escreva lá no topo, no campo da profissão. Pode trocar depois.',
+ p:'Meu sonho é ser {sonho}. Tenho {idade} anos e {escola}. Desenhe os degraus típicos até lá, começando pelo primeiro emprego (aprendiz, estágio ou curso técnico). Mostre também caminhos alternativos e quanto tempo cada degrau costuma levar.',
+ c:'peça para a IA explicar o degrau que você não entendeu. Dúvida que sobrar, anote para a Missão 5.',
+ o:[['escada','Você sai com: a sua escada, com as suas palavras','ex.: aprendiz no administrativo, técnico em contabilidade, faculdade (ProUni), estágio, contador',{help:'Escreva só os degraus, do primeiro ao último, separados por vírgula. Não cole a resposta inteira da IA.'}]],
+ extra:'bonus'},
+{id:2,t:'Onde a escada começa na região',min:'cerca de 10 min',stamp:'Mapa da região',
+ tip:'A IA não sabe quais vagas estão abertas hoje. Ela ajuda a achar as empresas; a vaga real você caça na Missão 3.',
+ f:[['cidade','Em que cidade você mora?','Caçapava/SP'],['regiao','Cidades perto onde daria para trabalhar','Caçapava, São José dos Campos, Taubaté e Jacareí',{help:'Pense onde dá para chegar de ônibus.'}],['degrau','Qual é o primeiro degrau da sua escada?','ex.: jovem aprendiz no administrativo',{help:'É o primeiro item que você anotou na Missão 1: um emprego de entrada ou um curso. Se deixar em branco, uso o primeiro da sua escada.'}]],
+ p:'Moro em {cidade}. Que empresas da região ({regiao}) costumam contratar jovens aprendizes ou estagiários na área deste primeiro degrau: {degrau}? Liste até 10, com o que a empresa faz, a cidade e o site oficial. Se não tiver certeza sobre alguma, diga.',
+ c:'abra o site de 3 empresas e veja se elas existem e fazem o que a IA disse.',
+ o:[['empresas','Você sai com: o nome das 3 empresas que você conferiu no site','ex.: Empresa A, Empresa B, Empresa C',{help:'Só as que você viu que existem de verdade.'}]]},
+{id:3,t:'Meu primeiro degrau',min:'cerca de 15 min',stamp:'Vaga na mira',
+ tip:'Bico, ajudar na loja da família, cuidar dos irmãos, editar vídeo: tudo isso conta como experiência. Coloque no pedido.',
+ f:[['sabe','O que você já sabe fazer?','ex.: atendo no comércio do meu tio, mexo bem no Canva',{help:'Vale tudo: bico, ajudar em casa ou no negócio da família, curso, hobby, coisa que aprendeu sozinho.'}],['gosta','Do que você gosta?','ex.: matemática, organizar coisas, games',{help:'Matérias da escola, hobbies, assuntos.'}]],
+ p:'Sobre mim: já sei {sabe} e gosto de {gosta}. Destas empresas: {empresas}. Que vaga de entrada (aprendiz, estágio ou técnico) combina com meu perfil? O que essa vaga costuma pedir que eu ainda não tenho, e onde aprendo isso de graça ou com bolsa perto de {cidade}?',
+ c:'procure uma vaga real dessa área na página de carreiras da empresa, no LinkedIn, na Gupy ou em outras plataformas. Curso e bolsa só valem confirmados no site oficial (Etec, Fatec, institutos federais, Senai, Senac, Sisu, ProUni).',
+ o:[['vaga','Você sai com: a vaga real que você achou','ex.: Jovem aprendiz administrativo, Empresa A',{help:'Nome da vaga + empresa. Tem que ser uma vaga que você viu publicada, não só a sugestão da IA.'}],['falta','O que a vaga pede que você ainda não tem','ex.: Excel básico, ensino médio completo']]},
+{id:4,t:'Os próximos 3 meses',min:'cerca de 10 min',stamp:'Plano no papel',
+ tip:'Plano que diz quando e onde você vai agir sai do papel muito mais vezes do que "vou estudar mais". Por isso o "quando, eu vou" lá embaixo.',
+ f:[['horas','Quantas horas por semana você consegue, de verdade? (só o número)','ex.: 4',{type:'number',help:'Conte escola, trabalho, casa e descanso. Melhor 2 horas que você cumpre do que 10 que não cumpre.'}]],
+ p:'Monte um plano de 3 meses para eu me preparar para a vaga de {vaga}, com uma meta pequena por semana que caiba em {horas} horas por semana. Diga qual seria minha primeira vitória e quando me inscrever nos processos seletivos.',
+ c:'o plano cabe na sua rotina de verdade? Se não couber, peça para a IA ajustar.',
+ o:[['mes1','Meta do mês 1 (uma frase)','ex.: terminar um curso grátis de Excel'],['mes2','Meta do mês 2 (uma frase)','ex.: montar o currículo e pedir para alguém revisar'],['mes3','Meta do mês 3 (uma frase)','ex.: me inscrever em 3 vagas'],['vitoria','Minha primeira vitória e como vou comemorar','ex.: terminar o curso de Excel; pizza com os amigos']],
+ extra:'when'},
+{id:5,t:'Converse com alguém de verdade',min:'cerca de 15 min + a conversa',stamp:'Plano revisado',
+ tip:'A IA não conhece você, sua cidade nem as empresas daqui como uma pessoa conhece. Se a conversa for boa, essa pessoa pode virar sua mentora.',
+ f:[['quem','Com quem você vai conversar?','ex.: meu professor de matemática',{help:'Escreva o papel da pessoa (professor, orientador do GAMT, tia que trabalha na área), não o nome dela: esse texto vai para a IA.'}]],
+ p:'Vou conversar por 15 minutos com {quem} sobre o meu plano. Meu sonho é {sonho}, meu primeiro degrau é {vaga} e meu plano começa por {mes1}. Me ajude a preparar 5 perguntas curtas para descobrir se o caminho faz sentido, o que eu não estou vendo e quem mais eu deveria conhecer.',
+ c:'na conversa, mostre a escada e o plano, faça as perguntas, anote as respostas e peça sinceridade: "o que você mudaria?". Depois, volte à IA: "Recebi este retorno: [o que a pessoa disse]. Ajuste meu plano levando isso em conta."',
+ o:[['retorno','Você sai com: o que a pessoa disse e o que mudou no seu plano','ex.: a professora sugeriu começar pelo técnico antes da faculdade']]}
+];
+
+const T=[
+['Escrever, revisar, montar CV, tirar dúvidas','ChatGPT, Gemini, Claude ou Copilot','Rascunhar e revisar textos, explicar um assunto, simular entrevista.','Confira o que ela acrescentou por conta própria.'],
+['Pesquisar com fontes','Perplexity ou Gemini','Respostas com links para os sites de origem (empresas, cursos, salários).','Abra os links: dado sem fonte não vale.'],
+['Estudar uma apostila, PDF ou vídeo','NotebookLM, do Google','Resumo, quiz, mapa mental e "podcast" em português do seu material.','Precisa de conta Google; grátis com 50 perguntas e 3 áudios por dia.','https://notebooklm.google.com'],
+['Treinar inglês e entrevista','Modo de voz do ChatGPT ou do Gemini','Conversar em voz alta e receber correção.','Peça: "corrija meus erros no fim de cada resposta".'],
+['Apresentações','Gamma (ou Canva)','Gera slides a partir de um texto ou roteiro.','Grátis: 400 créditos que não renovam (8 a 10 apresentações). Acabou? Peça o roteiro ao chat e monte no Canva ou no Google Apresentações.','https://gamma.app'],
+['Fluxograma, mapa mental, infográfico','Napkin AI','Transforma um texto em diagrama editável.','Grátis: 500 créditos por semana, com marca d\'água; gera só no computador.','https://www.napkin.ai'],
+['Design: post, cartaz, currículo visual','Canva','Modelos prontos, com recursos de IA.','Os recursos de IA têm cota no plano grátis.']
+];
+
+const fill=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>{const v=val(k);return v?esc(v):'<span class="ph">['+esc(label(k))+']</span>'});
+const plain=(tpl)=>tpl.replace(/\{(\w+)\}/g,(m,k)=>val(k)||'['+label(k)+']');
+const LBL={sonho:'a profissão dos seus sonhos',idade:'sua idade',escola:'como estão seus estudos',interesse:'do que você gosta',cidade:'sua cidade',regiao:'cidades da região',degrau:'o primeiro degrau da sua escada',sabe:'o que você já sabe fazer',gosta:'do que você gosta',empresas:'as 3 empresas da Missão 2',vaga:'a vaga real da Missão 3',horas:'horas por semana',mes1:'a meta do mês 1',quem:'com quem vai conversar'};
+function label(k){return LBL[k]||k}
+
+const field=([k,l,ph,o={}],ta)=>{
+  const inp=o.type==='select'?`<select data-k="${k}"><option value="">Escolha uma opção</option>${o.opts.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`
+   :ta?`<textarea data-k="${k}" placeholder="${esc(ph)}"></textarea>`
+   :`<input data-k="${k}" ${o.type==='number'?'type="number" inputmode="numeric" min="1" max="99"':''} placeholder="${esc(ph)}">`;
+  return `<label class="f">${esc(l)}${inp}${o.help?`<span class="help">${esc(o.help)}</span>`:''}</label>`};
+
+const bonus=`<details><summary>Bônus: e se a profissão mudar?</summary>
+<p>Ninguém sabe como cada profissão vai estar daqui a 10 anos. Em vez de adivinhar, pergunte:</p>
+<p class="howto">Copie este pedido e cole no chat de uma IA (ChatGPT, Gemini, Claude ou Copilot). Depois, leia a resposta.</p>
+<div class="prompt" id="pb">${'Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?'}</div>
+<div class="row"><button data-copy="pb">Copiar pedido para a IA</button><span class="toast" id="t-pb" aria-live="polite"></span></div>
+<p><b>Exemplo ilustrativo: quem sonha em ser contador</b></p>
+<div class="fut">
+<div><b>Tudo como hoje</b><span>Empresas seguem precisando de contador para impostos e folha de pagamento.</span></div>
+<div><b>Menos vagas</b><span>A IA faz os lançamentos simples; sobra espaço para quem analisa e orienta o cliente.</span></div>
+<div><b>Regras novas</b><span>Uma mudança grande nos impostos; quem estuda as regras novas sai na frente.</span></div>
+<div><b>Tudo muda</b><span>O contador vira consultor que usa IA para entender os números do cliente.</span></div>
+</div>
+<p><b>Primeiro degrau que vale em todos:</b> aprendiz no administrativo ou financeiro + técnico em contabilidade + Excel. Escolha um primeiro passo que funcione em vários futuros.</p>
+</details>`;
+const when=`<div class="check"><b>Meu primeiro passo, em uma frase</b>
+<div class="when" style="margin-top:8px"><span>Quando</span><input data-k="quando" placeholder="ex.: chegar da escola na terça"><span>eu vou</span><input data-k="euvou" placeholder="ex.: fazer 30 min do curso de Excel"></div>
+<span class="help" style="display:block;margin-top:6px">Quando: um momento fixo que se repete toda semana. Eu vou: uma ação pequena, de até 30 minutos, que dá para começar hoje.</span></div>`;
+
+document.getElementById('ladder').innerHTML=M.map((m,i)=>`
+<article class="mis" id="m${m.id}">
+ <div class="mhead"><div class="num">${m.id}</div><div><h3>${esc(m.t)}</h3><div class="meta">Missão ${m.id} de 5 · ${esc(m.min)}</div></div></div>
+ <div class="tip"><img src="wbot-cabeca.webp" alt="" width="52" height="52"><p>${esc(m.tip)}</p></div>
+ <div class="fields">${m.f.map(x=>field(x)).join('')}</div>
+ ${m.note?`<div class="check naosei-only"><b>Ainda não sabe?</b> ${esc(m.note)}</div>`:''}
+ <p class="howto">Copie este pedido e cole no chat de uma IA (ChatGPT, Gemini, Claude ou Copilot). Depois, leia a resposta.</p>
+ <div class="prompt" id="p${m.id}"></div>
+ <div class="row"><button class="pri" data-copy="p${m.id}">Copiar pedido para a IA</button><span class="toast" id="t-p${m.id}" aria-live="polite"></span></div>
+ ${m.extra==='bonus'?bonus:''}
+ <div class="check"><b>Confira:</b> ${esc(m.c)}</div>
+ <div class="fields">${m.o.map(x=>field(x,true)).join('')}</div>
+ ${m.extra==='when'?when:''}
+ <div class="row" style="margin-top:8px"><button class="fin" data-done="${m.id}"></button></div>
+ ${i<M.length-1?`<p class="next">Próxima: ${esc(M[i+1].t)} (${esc(M[i+1].min)})</p>`:''}
+</article>`).join('');
+
+document.getElementById('tools').innerHTML=T.map(([t,n,u,w,href])=>`<div class="tool"><div class="t">${esc(t)}</div><h3>${href?`<a href="${href}">${esc(n)}</a>`:esc(n)}</h3><p>${esc(u)}</p><p class="warn">${esc(w)}</p></div>`).join('');
+
+const PLAN=[['Profissão dos sonhos','_sonho'],['Minha escada','escada'],['Meu primeiro degrau (vaga-alvo)','vaga'],['O que falta','falta'],['Mês 1','mes1'],['Mês 2','mes2'],['Mês 3','mes3'],['Primeira vitória e como vou comemorar','vitoria'],['Com quem conversei e o que mudou','retorno'],['Meu primeiro passo','_passo']];
+const passo=()=>val('quando')&&val('euvou')?`Quando ${val('quando')}, eu vou ${val('euvou')}.`:'';
+const pv=k=>k==='_passo'?passo():k==='_sonho'?sonhoTxt():val(k);
+
+const stampNames=['Fui ao encontro',...M.map(m=>m.stamp)];
+const NOTPRO=/(faculdade|vestibular|enem|\bpassar\b|estudar|emprego|trabalhar|dinheiro|rico|feliz|sucesso|viajar|n[aã]o sei|sei l[aá]|qualquer)/i;
+function render(pop){
+  const ns=!!val('naosei');document.body.classList.toggle('naosei',ns);
+  document.getElementById('interessebox').hidden=!ns;
+  document.getElementById('sonhowarn').hidden=!NOTPRO.test(val('sonho'));
+  M.forEach(m=>{document.getElementById('p'+m.id).innerHTML=fill(tplOf(m));
+    const b=document.querySelector(`[data-done="${m.id}"]`);const d=!!S.done[m.id];
+    b.textContent=d?'Carimbada! (toque para desfazer)':'Concluí esta missão';b.setAttribute('aria-pressed',d);
+    document.getElementById('m'+m.id).classList.toggle('done',d)});
+  const pb=document.getElementById('pb');if(pb)pb.innerHTML=fill('Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?');
+  const n=1+M.filter(m=>S.done[m.id]).length;
+  document.getElementById('score').textContent=`${n} de 6 carimbos`;
+  document.getElementById('barfill').style.width=(n/6*100)+'%';
+  document.querySelector('.bar').setAttribute('aria-valuenow',n);
+  document.getElementById('stamps').innerHTML=stampNames.map((s,i)=>{const on=i===0||S.done[i];return `<div class="stamp${on?' on':''}${pop===i?' pop':''}">${esc(s)}</div>`}).join('');
+  const day=Math.floor((Date.now()-new Date(S.start+'T00:00:00'))/864e5)+1;
+  document.getElementById('day').textContent=`Dia ${day} da jornada`;
+  const nx=M.find(m=>!S.done[m.id]);
+  document.getElementById('nudge').textContent=n===6?'Escada completa. Agora é viver o plano, um degrau por semana.':
+    day>=7?`Já faz ${day} dias. Qual degrau você subiu? Próxima: Missão ${nx.id}, ${nx.t}.`:
+    n===1?'O primeiro carimbo já é seu: você foi ao encontro.':`Faltam ${6-n}. Próxima: Missão ${nx.id}, ${nx.t}.`;
+  document.getElementById('plan').innerHTML=PLAN.map(([l,k])=>{const v=pv(k);return `<div><dt>${esc(l)}</dt><dd class="${v?'':'empty'}">${v?esc(v):'ainda em branco'}</dd></div>`}).join('');
+}
+
+document.querySelectorAll('[data-k]').forEach(el=>{
+  const k=el.dataset.k;
+  if(S.v[k]==null&&k==='cidade')S.v[k]='Caçapava/SP';
+  if(S.v[k]==null&&k==='regiao')S.v[k]='Caçapava, São José dos Campos, Taubaté e Jacareí';
+  if(el.type==='checkbox'){el.checked=!!S.v[k];el.addEventListener('change',()=>{S.v[k]=el.checked?'1':'';save();render()});return}
+  el.value=S.v[k]||'';
+  el.addEventListener('input',()=>{S.v[k]=el.value;document.querySelectorAll(`[data-k="${k}"]`).forEach(o=>{if(o!==el)o.value=el.value});save();render()});
+});
+
+document.addEventListener('click',async e=>{
+  const d=e.target.closest('[data-done]');
+  if(d){const id=+d.dataset.done;S.done[id]=!S.done[id];save();render(S.done[id]?id:null);return}
+  const c=e.target.closest('[data-copy]');
+  if(c){const id=c.dataset.copy;let txt;
+    if(id==='plan')txt='MEU PLANO (kit GAMT)\n'+PLAN.map(([l,k])=>`${l}: ${pv(k)||'-'}`).join('\n');
+    else{const m=M.find(x=>'p'+x.id===id);txt=m?plain(tplOf(m)):id==='pb'?plain('Como a tecnologia e a IA podem mudar a profissão {sonho} nos próximos 10 anos? Me dê 2 ou 3 jeitos diferentes que isso pode acontecer. Qual primeiro degrau continua valendo em todos eles?'):document.getElementById(id).textContent.trim()}
+    const t=document.getElementById('t-'+id);
+    try{await navigator.clipboard.writeText(txt);t.textContent='Copiado! Agora abra a IA e cole no chat.';if(id==='plan'||id.startsWith('msg'))t.textContent='Copiado.'}
+    catch(err){t.textContent='Não deu para copiar aqui: segure o dedo no texto e copie.'}
+    setTimeout(()=>t.textContent='',3500)}
+});
+
+/* mapa para download */
+let lastMap=null;
+document.addEventListener('click',e=>{if(e.target.id==='openmap'){e.preventDefault();if(lastMap)showModal(lastMap)}});
+/* app instalável (só fora do claude.ai) */
+const inClaude=/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
+if(!inClaude&&'serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+let deferred=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;document.getElementById('installbox').hidden=false});
+document.getElementById('installbtn').addEventListener('click',async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice}catch(e){}deferred=null;document.getElementById('installbox').hidden=true});
+const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+if(!inClaude&&!standalone&&/iphone|ipad/i.test(navigator.userAgent))document.getElementById('ioshint').hidden=false;
+let DL=null;
+try{if(window.claude&&window.claude.use)window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}catch(e){}
+const loadImg=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+function wrapLines(ctx,text,maxW,maxL){
+  const words=String(text).replace(/\s+/g,' ').trim().split(' ');const lines=[];let cur='';
+  for(const w of words){const t=cur?cur+' '+w:w;if(ctx.measureText(t).width<=maxW)cur=t;else{if(cur)lines.push(cur);cur=w}}
+  if(cur)lines.push(cur);
+  if(lines.length>maxL){lines.length=maxL;let l=lines[maxL-1];while(ctx.measureText(l+'…').width>maxW&&l.length)l=l.slice(0,-1);lines[maxL-1]=l+'…'}
+  return lines}
+async function drawMap(){
+  try{await Promise.all([document.fonts.load('600 60px Fraunces'),document.fonts.load('400 30px "Work Sans"'),document.fonts.load('600 26px "Work Sans"')])}catch(e){}
+  const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const INK='#1C1C1C',CO='#2F2FD1',CR='#FAF2E2',CARD='#FFFAF0',HI='#FFE680',GR='#4D4D4D';
+  const SER='Fraunces, Georgia, serif',SAN='"Work Sans", Arial, sans-serif';
+  x.fillStyle=CR;x.fillRect(0,0,W,H);
+  x.fillStyle=CO;x.beginPath();x.arc(92,104,9,0,7);x.fill();
+  x.font='600 28px '+SAN;x.fillText('Kit GAMT · Do sonho ao primeiro degrau',114,114);
+  x.fillStyle=INK;x.font='600 92px '+SER;x.fillText('Minha escada',80,232);
+  x.fillStyle=GR;x.font='400 28px '+SAN;
+  x.fillText('Comecei em '+S.start.split('-').reverse().join('/')+' · '+(1+M.filter(m=>S.done[m.id]).length)+' de 6 carimbos',80,282);
+  const steps=[['Meu primeiro passo',passo()],['Primeiro degrau',val('vaga')],['Mês 1',val('mes1')],['Mês 2',val('mes2')],['Mês 3',val('mes3')],['Primeira vitória',val('vitoria')],['Profissão dos sonhos',sonhoTxt()]];
+  const sh=150,gap=20,dx=48,cw=W-160-dx*6,base=1370;
+  steps.forEach(([lab,v],i)=>{
+    const sx=80+i*dx,sy=base-i*(sh+gap),top=i===6;
+    x.fillStyle=INK;x.fillRect(sx+9,sy+9,cw,sh);
+    x.fillStyle=top?HI:CARD;x.fillRect(sx,sy,cw,sh);
+    x.lineWidth=4;x.strokeStyle=INK;x.strokeRect(sx,sy,cw,sh);
+    x.fillStyle=top?INK:CO;x.beginPath();x.arc(sx+56,sy+sh/2,30,0,7);x.fill();
+    x.fillStyle=top?HI:'#fff';x.font='600 30px '+SER;x.textAlign='center';x.fillText(String(i+1),sx+56,sy+sh/2+11);x.textAlign='left';
+    const tx=sx+108,tw=cw-128;
+    x.fillStyle=top?INK:CO;x.font='600 24px '+SAN;x.fillText(lab,tx,sy+40);
+    if(v){x.fillStyle=INK;x.font=top?'600 40px '+SER:'400 27px '+SAN;
+      const L=wrapLines(x,v,tw,top?2:3),lh=top?44:32;L.forEach((l,j)=>x.fillText(l,tx,sy+(top?88:76)+j*lh))}
+    else{x.fillStyle='#8a8478';x.font='italic 400 27px '+SAN;x.fillText('a preencher',tx,sy+84)}
+  });
+  const bot=await loadImg('wbot.webp');
+  if(bot){const bh=290,bw=bot.width*bh/bot.height;x.save();x.translate(80+bw/2,1690);x.rotate(-0.06);x.drawImage(bot,-bw/2,-bh/2,bw,bh);x.restore()}
+  const names=['Fui ao encontro',...M.map(m=>m.stamp)];
+  names.forEach((n,i)=>{const cx=470+(i%3)*190,cy=1612+Math.floor(i/3)*150,on=i===0||S.done[i];
+    x.save();x.translate(cx,cy);if(on)x.rotate(-0.14);
+    x.beginPath();x.arc(0,0,64,0,7);
+    if(on){x.fillStyle='#E6E6FB';x.fill();x.lineWidth=6;x.strokeStyle=CO;x.setLineDash([])}else{x.lineWidth=3;x.strokeStyle='#9a9488';x.setLineDash([10,8])}
+    x.stroke();x.setLineDash([]);
+    x.fillStyle=on?CO:'#9a9488';x.font='600 21px '+SAN;x.textAlign='center';
+    const L=wrapLines(x,n,104,2);L.forEach((l,j)=>x.fillText(l,0,(j-(L.length-1)/2)*24+7));x.restore()});
+  x.textAlign='left';x.fillStyle=INK;x.font='600 30px '+SER;x.fillText('Wanderson Filho',80,1878);
+  x.fillStyle=GR;x.font='400 24px '+SAN;x.textAlign='right';x.fillText('Um degrau por semana.',W-80,1878);x.textAlign='left';
+  return c}
+const toast=(m)=>{const t=document.getElementById('t-plan');t.textContent=m;setTimeout(()=>t.textContent='',4000)};
+function showModal(c){document.getElementById('mapimg').src=c.toDataURL('image/png');document.getElementById('modal').hidden=false;document.getElementById('mclose').focus()}
+document.getElementById('mclose').addEventListener('click',()=>{document.getElementById('modal').hidden=true});
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')e.currentTarget.hidden=true});
+document.getElementById('mapbtn').addEventListener('click',async()=>{
+  const b=document.getElementById('mapbtn');b.disabled=true;b.textContent='Montando o mapa…';
+  try{const c=await drawMap();
+    if(DL){const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+      try{await DL.save({filename:'minha-escada.png',data:blob});toast('Mapa salvo.')}
+      catch(err){if(err&&err.code==='declined')toast('Download cancelado.');else showModal(c)}}
+    else{const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+      try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='minha-escada.png';document.body.appendChild(a);a.click();a.remove();
+        lastMap=c;const t=document.getElementById('t-plan');t.innerHTML='Baixou? Se não apareceu, <a href="#" id="openmap">toque aqui para abrir a imagem</a>.';setTimeout(()=>{if(t.querySelector('#openmap'))t.textContent=''},12000)}
+      catch(e){showModal(c)}}}
+  catch(e){toast('Não deu para montar o mapa agora. Tente de novo.')}
+  b.disabled=false;b.textContent='Baixar meu mapa (imagem)'});
+
+save();render();
+}
+</script>
+</body>
+</html>
