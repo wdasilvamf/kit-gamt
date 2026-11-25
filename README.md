@@ -4,7 +4,7 @@ Kit de continuidade do encontro **"IA no mercado de trabalho"** do projeto socia
 
 São cinco missões curtas no celular, feitas com qualquer IA gratuita. No fim, cada participante tem a escada da profissão dos sonhos, uma vaga real como primeiro degrau e um plano de 3 meses revisado por uma pessoa de verdade.
 
-**Acesse:** https://SEU-USUARIO.github.io/kit-gamt/
+**Acesse:** https://wdasilvamf.github.io/kit-gamt/
 
 ## Para quem participa
 
